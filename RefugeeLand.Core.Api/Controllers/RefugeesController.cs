@@ -3,6 +3,7 @@
 // FREE TO USE TO DELIVER HUMANITARIAN AID, HOPE AND LOVE
 // -------------------------------------------------------
 
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RefugeeLand.Core.Api.Models.Refugees;
@@ -48,6 +49,26 @@ namespace RefugeeLand.Core.Api.Controllers
                 return InternalServerError(refugeeDependencyException.InnerException.Message);
             }
             catch (RefugeeServiceException refugeeServiceException)
+            {
+                return InternalServerError(refugeeServiceException);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult<IQueryable<Refugee>> GetAllRefugees()
+        {
+            try
+            {
+                IQueryable<Refugee> retrievedRefugees =
+                    this.refugeeService.RetrieveAllRefugees();
+
+                return Ok(retrievedRefugees);
+            }
+            catch (RefugeeDependencyException refugeeDependencyException)
+            {
+                return InternalServerError(refugeeDependencyException);
+            }
+            catch(RefugeeServiceException refugeeServiceException)
             {
                 return InternalServerError(refugeeServiceException);
             }
